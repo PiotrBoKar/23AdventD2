@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,6 +14,7 @@ public class ReadFile {
         return listOfCommands;
     }
 
+    //P1
     public static int getGameList(ArrayList<String> list) {
         int count = 0;
         ArrayList<Integer> blueCount = ReadFile.isPossible("blue", list);
@@ -34,6 +34,7 @@ public class ReadFile {
         return count;
     }
 
+    //P1
     public static ArrayList<Integer> isPossible(String color, ArrayList<String> game) {
         ArrayList<String> cubesCount = new ArrayList<>();
         ArrayList<Integer> possibleGame = new ArrayList<>();
@@ -86,5 +87,61 @@ public class ReadFile {
             }
         }
         return possibleGame;
+    }
+    //P2
+    public static ArrayList<Integer> determineMinimum(String color, ArrayList<String> game) {
+        ArrayList<Integer> cubesCount = new ArrayList<>();
+        ArrayList<Integer> possibleMin = new ArrayList<>();
+        boolean isNumeric = false;
+        int start;
+        int index;
+        for (String s : game) {
+            index = 0;
+            cubesCount.clear();
+            while (index != -1) {
+                index = s.indexOf(color, index);
+                try {
+                    isNumeric = s.substring(index - 2, index - 1).chars().allMatch(Character::isDigit);
+                } catch (IndexOutOfBoundsException ignored) {
+                }
+                if (isNumeric) {
+                    start = 2;
+                } else {
+                    start = 1;
+                }
+                if (index != -1) {
+                    cubesCount.add(Integer.parseInt(s.substring(index - start, index)));
+                    index++;
+                }
+            }
+            int max = cubesCount.get(0);
+            for (int i = 1; i < cubesCount.size(); i++) {
+                if (max < cubesCount.get(i)) {
+                    max = cubesCount.get(i);
+                }
+
+            }
+            possibleMin.add(max);
+        }
+        return possibleMin;
+
+    }
+
+
+    //P2
+    public static int getLargestList(ArrayList<String> list) {
+        int count = 0;
+        ArrayList<Integer> blueCount = ReadFile.determineMinimum("blue", list);
+        ArrayList<Integer> redCount = ReadFile.determineMinimum("red", list);
+        ArrayList<Integer> greenCount = ReadFile.determineMinimum("green", list);
+        int colorSize = Math.max(greenCount.size(), (Math.max(blueCount.size(), redCount.size())));
+        for (int i = 0; i < colorSize; i++) {
+            try {
+                count += blueCount.get(i)*redCount.get(i)*greenCount.get(i);
+            } catch (IndexOutOfBoundsException ignored) {
+
+            }
+        }
+        return count;
     }
 }
